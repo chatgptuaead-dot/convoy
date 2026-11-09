@@ -79,6 +79,9 @@ body[data-mode='drive'] .maplibregl-ctrl-top-right { top: auto; bottom: calc(var
 .primary, .secondary { flex: 1; padding: 15px; border-radius: 16px; font-weight: 800; font-size: 18px; }
 .primary { background: var(--accent); color: var(--accent-ink); }
 .secondary { background: var(--panel-2); }
+.trip-time { flex: none; display: flex; flex-direction: column; justify-content: center; padding: 0 8px 0 4px; line-height: 1.2; }
+.trip-time b { font-size: 20px; font-weight: 800; white-space: nowrap; }
+.trip-time small { color: var(--muted); font-size: 13px; }
 
 /* Driving */
 .drive-top { position: fixed; z-index: 7; top: calc(var(--safe-t) + var(--gutter)); left: var(--gutter); right: var(--gutter); max-width: 420px; display: flex; flex-direction: column; gap: 8px; }

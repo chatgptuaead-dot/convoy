@@ -619,6 +619,11 @@ function renderPreview() {
     list.append(button);
   });
 
+  const tripTime = document.createElement('div');
+  tripTime.className = 'trip-time';
+  tripTime.innerHTML = `<b>${fmtDur(s.routes[s.sel].eta)}</b><small>drive time</small>`;
+  actions.append(tripTime);
+
   if (s.gpsOK && !s.manual) {
     actions.append(actionButton('Simulate', 'secondary', () => startDrive('sim')));
     actions.append(actionButton('Go', 'primary', () => startDrive('gps')));
