@@ -175,6 +175,8 @@ body[data-mode='drive'] .maplibregl-ctrl-top-right { top: auto; bottom: calc(var
 .drawer .stats { margin-top: 8px; }
 .drawer h3 { margin: 18px 0 6px; font-size: 13px; color: var(--muted); font-weight: 700; }
 .setting { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 0; font-weight: 600; }
+.setting-btn { flex: none; padding: 12px 18px; font-size: 15px; border-radius: 10px; }
+.setting-on { color: var(--muted); }
 .seg { display: flex; background: var(--panel-2); border-radius: 10px; padding: 3px; }
 .seg button { padding: 6px 10px; border-radius: 8px; font-size: 14px; font-weight: 700; color: var(--muted); }
 .seg button[aria-pressed='true'] { background: var(--panel); color: var(--text); }

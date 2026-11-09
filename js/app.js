@@ -82,7 +82,7 @@ function save() {
 
 const s = {
   mode: 'browse', pos: state.lastPos || DEFAULT_POS, heading: 0, speed: 0,
-  gpsOK: false, manual: false, gpsWarned: false,
+  gpsOK: false, manual: false, gpsWarned: false, locationHelp: '',
   dest: null, routes: [], sel: 0, planToken: 0, routeError: null,
   incidents: [], cameras: [], nextLive: 0, choosing: null, simMult: 4, trip: null, result: null,
 };
@@ -988,10 +988,42 @@ function onFix(position) {
   if (first && s.mode === 'preview' && s.dest) renderPreview();
 }
 
-if (navigator.geolocation) {
-  navigator.geolocation.watchPosition(onFix, onGpsError, { enableHighAccuracy: true, maximumAge: 1000, timeout: 15000 });
-} else {
-  onGpsError();
+let gpsWatch = null;
+
+function watchGps() {
+  if (gpsWatch !== null) navigator.geolocation.clearWatch(gpsWatch);
+  gpsWatch = navigator.geolocation.watchPosition(onFix, onGpsError, { enableHighAccuracy: true, maximumAge: 1000, timeout: 15000 });
+}
+
+if (navigator.geolocation) watchGps();
+else onGpsError();
+
+/** Asks for location from the menu. Also undoes a starting point set by hand. */
+function enableLocation() {
+  if (!navigator.geolocation) {
+    s.locationHelp = 'This browser cannot share your location.';
+    renderDrawer();
+    return;
+  }
+  s.locationHelp = '';
+  toast('Finding your location…');
+  navigator.geolocation.getCurrentPosition((position) => {
+    const wasOn = s.gpsOK;
+    s.manual = false;
+    watchGps();
+    onFix(position);
+    if (wasOn && s.mode === 'browse') map.flyTo({ center: [position.coords.longitude, position.coords.latitude], zoom: 15, duration: 900 });
+    if (s.mode === 'preview' && s.dest) planTo(s.dest);
+    closeDrawer();
+    renderDrawer();
+    toast('Location is on');
+  }, (error) => {
+    s.locationHelp = error.code === error.PERMISSION_DENIED
+      ? 'Location is blocked for this site. On iPhone, go to Settings > Privacy & Security > Location Services > Safari Websites. On Android, tap the icon next to the address, then Permissions. Then reload this page.'
+      : 'Could not find your location. Move somewhere with a clearer view of the sky and try again.';
+    toast('Location is not on');
+    renderDrawer();
+  }, { enableHighAccuracy: true, timeout: 15000 });
 }
 
 /* ---------- Dropped pins ---------- */
@@ -1070,6 +1102,8 @@ function renderDrawer() {
       <div><dt>Reports</dt><dd>${state.reports.length}</dd></div>
     </dl>
     <h3>Settings</h3>
+    <div class="setting">Location ${s.gpsOK && !s.manual ? '<span class="setting-on">On</span>' : '<button class="primary setting-btn" id="enableLocation">Enable</button>'}</div>
+    ${s.locationHelp ? `<p class="credits">${s.locationHelp}</p>` : ''}
     <div class="setting">Map ${segmented('theme', [['auto', 'Auto'], ['light', 'Day'], ['dark', 'Night']])}</div>
     <div class="setting">Units ${segmented('units', [['km', 'km'], ['mi', 'mi']])}</div>
     <div class="setting">Voice ${segmented('voice', [[true, 'On'], [false, 'Off']])}</div>
@@ -1117,6 +1151,10 @@ $('#drawer').addEventListener('click', (e) => {
     if (!confirm('Erase your points, reports and saved places?')) return;
     localStorage.removeItem(STORE_KEY);
     location.reload();
+    return;
+  }
+  if (button.id === 'enableLocation') {
+    enableLocation();
     return;
   }
   if (button.id === 'saveKey') {
