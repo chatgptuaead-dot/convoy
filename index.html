@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#15131f">
+  <title>Convoy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap">
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-mode="browse">
+  <div id="map"></div>
+
+  <!-- Browse -->
+  <button class="round top-left" id="menuBtn" data-modes="browse" aria-label="Open menu">
+    <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+  </button>
+  <section class="sheet" data-modes="browse">
+    <button class="where" id="whereBtn">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.8-3.8"/></svg>
+      Where to?
+    </button>
+    <div class="chips" id="quickChips"></div>
+  </section>
+
+  <!-- Route preview -->
+  <section class="sheet" data-modes="preview">
+    <header class="sheet-head">
+      <button class="icon-btn" id="backBtn" aria-label="Back">
+        <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <div class="sheet-title">
+        <strong id="destName"></strong>
+        <span id="destDetail"></span>
+      </div>
+    </header>
+    <div id="routeList" class="route-list"></div>
+    <div class="actions" id="previewActions"></div>
+  </section>
+
+  <!-- Drive -->
+  <div class="drive-top" data-modes="drive">
+    <section class="banner">
+      <div class="turn" id="turnIcon"></div>
+      <div class="banner-text">
+        <strong id="turnDist"></strong>
+        <span id="turnText"></span>
+      </div>
+    </section>
+    <section class="lane-panel" id="lanePanel" hidden>
+      <div class="lane-row" id="laneRow"></div>
+      <div class="lane-text">
+        <strong id="laneText"></strong>
+        <span id="laneSource"></span>
+      </div>
+    </section>
+    <section class="alert" id="alert" hidden>
+      <div class="alert-icon" id="alertIcon"></div>
+      <div class="alert-text">
+        <strong id="alertTitle"></strong>
+        <span id="alertDist"></span>
+      </div>
+      <button id="alertYes">Still there</button>
+      <button id="alertNo">Not there</button>
+    </section>
+  </div>
+  <div class="speed" data-modes="drive"><strong id="speedVal">0</strong><span id="speedUnit"></span></div>
+  <section class="drivebar" data-modes="drive">
+    <button class="icon-btn" id="endBtn" aria-label="End drive">
+      <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <div class="eta">
+      <strong id="etaClock"></strong>
+      <span id="etaRest"></span>
+    </div>
+    <button class="sim-chip" id="simChip"></button>
+    <button class="icon-btn" id="muteBtn" aria-label="Toggle voice"></button>
+  </section>
+  <button class="pill recenter" id="recenterBtn" hidden>Recenter</button>
+
+  <!-- Arrived -->
+  <section class="sheet arrived" data-modes="arrived">
+    <h2>You made it</h2>
+    <p id="arrivedPlace"></p>
+    <dl class="stats" id="arrivedStats"></dl>
+    <div class="actions"><button class="primary" id="doneBtn">Done</button></div>
+  </section>
+
+  <!-- Report button, shared by browse and drive -->
+  <button class="report-fab" id="reportBtn" data-modes="browse drive" aria-label="Report something on the road">
+    <svg viewBox="0 0 24 24"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.01"/></svg>
+  </button>
+  <button class="round locate" id="locateBtn" data-modes="browse" aria-label="Center on my location">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
+  </button>
+
+  <!-- Search overlay -->
+  <section class="panel" id="searchPanel" hidden>
+    <div class="search-row">
+      <button class="icon-btn" id="searchClose" aria-label="Close search">
+        <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <input id="searchInput" type="search" placeholder="Search a place or address" autocomplete="off" spellcheck="false">
+    </div>
+    <div id="searchResults" class="results"></div>
+  </section>
+
+  <!-- Report picker -->
+  <div class="scrim" id="reportScrim" hidden></div>
+  <section class="sheet report-sheet" id="reportSheet" hidden>
+    <h2>What's on the road?</h2>
+    <div class="report-grid" id="reportGrid"></div>
+  </section>
+
+  <!-- Menu -->
+  <div class="scrim" id="menuScrim" hidden></div>
+  <aside class="drawer" id="drawer" hidden></aside>
+
+  <div class="toast" id="toast" hidden role="status"></div>
+
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
